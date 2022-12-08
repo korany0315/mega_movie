@@ -208,7 +208,7 @@
         </div>
     </div>
     <div class="genre-container">
-        <button>모두보기</button>
+        <button>Drama</button>
         <button>Mystery</button>
         <button>Thriller</button>
         <button>Biography</button>
@@ -244,23 +244,19 @@
         const moviesContents = document.querySelector('.movies-contents');
         const userInput = document.querySelector('#userInput');
         const bx = document.querySelector('.bx');
-        const genreContainer = document.querySelector('.genre-container');
 
         let allMovies = [];
         const URL = 'https://yts.mx/api/v2/list_movies.json';
-        fetch(URL).then(data => data.json())
-            .then(data => {
-                // console.log(data);
 
-                // if( data.status ){
-                //     console.log( data.data.limit);
-                //     console.log( data.data.movies);
-                //     console.log( data.data.movies.length);
-                // }
+        loadData(URL);
 
-                allMovies = data.data.movies.map(movie => movie);
-                movieList(allMovies);
-            })
+        function loadData(URL) {
+            fetch(URL).then(data => data.json())
+                .then(data => {
+                    allMovies = data.data.movies.map(movie => movie);
+                    movieList(allMovies);
+                })
+        }
 
         userInput.addEventListener('keyup', (event) => {
             console.log(event.target.value);
@@ -297,7 +293,6 @@
             moviesContents.innerHTML = '';
             movieList(allMovies);
         })
-
         // const inputContainer = document.querySelector('.input-container');
         // inputContainer.addEventListener('mouseenter', () => {
         //     inputContainer.classList.add('active');
@@ -317,6 +312,7 @@
             // }
             moviesContents.innerHTML = '';
             movieList(allMovies);
+            //inputContainer.classList.remove('active');
         })
 
 
@@ -328,12 +324,9 @@
             }
         }
 
-        function validate(value){
-            return !!value;
-            // undefined, NaN, Null, 0 : false
-        }
-
         function createDom(movie) {
+
+
             const movieBox = document.createElement('div');
             movieBox.classList.add('movie-box');
 
@@ -341,14 +334,7 @@
             movieImg.classList.add('movie-img');
 
             const img = document.createElement('img');
-            
-            // 데이터가 비정상적일때 처리 
-            if(validate(movie.large_cover_image)){
-                img.setAttribute('src', movie.large_cover_image);
-            }else{
-                console.log( '이미지 준비중입니다.');
-            }
-            
+            img.setAttribute('src', movie.large_cover_image);
             img.setAttribute('title', movie.summary);
 
             movieImg.append(img);
@@ -394,46 +380,6 @@
 
         function showNavi() {
             document.querySelector('.navigation').classList.toggle('active');
-        }
-    </script>
-
-    <script>
-        genreContainer.addEventListener('click', (event)=>{
-            // 이벤트 위임 : 버튼 그룹으로 검색어를 찾을 것임
-            //console.log(event.target.innerHTML);
-
-            let searchText = event.target.innerHTML;
-            const searchMovies = searchGenre( searchText);
-
-            // search 한 영화를 별도로 담아서 뿌려주기 
-            moviesContents.innerHTML = '';
-            if( searchText === "모두보기"){
-                allMovies.forEach((movie)=>{
-                    createDom( movie );
-                })
-            }else{
-                searchMovies.forEach((movie)=>{
-                    createDom( movie );
-                })
-            }
-        })
-
-        // 데이터를 읽어 오는 시간
-        function searchGenre(searchText){
-            const searchMovies = [];
-            // 배열을 지우는 효과
-            allMovies.map( movie => {
-                // console.log( movie );
-                // console.log( movie.genres );
-                if(movie.genres.includes(searchText)){
-                    //console.log( movie);
-                    searchMovies.push(movie);
-                }
-                
-            })   
-            console.log( searchMovies[0] );
-            
-            return searchMovies; 
         }
     </script>
 
